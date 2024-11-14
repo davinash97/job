@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,22 +23,22 @@ import com.jobsphere.job.model.Response;
 import com.jobsphere.job.service.JobService;
 
 @RestController
-@RequestMapping("/job")
-public class JobController {
+@RequestMapping("/job/{profile_id}")
+public class JobControllerWithProfileId {
 
-	private static final Logger log = LoggerFactory.getLogger(JobController.class);
+	private static final Logger log = LoggerFactory.getLogger(JobControllerWithProfileId.class);
 
 	@Autowired
 	private JobService service;
 
 	@PostMapping
-	public ResponseEntity<Response<?>> create(@RequestBody (required=false) Job body,
-											@RequestParam (required = false) UUID profile_id,
-											@RequestParam (required=false) String title,
-											@RequestParam (required=false) String description,
-											@RequestParam (required=false) Integer no_of_openings,
-											@RequestParam (required=false) String organization,
-											@RequestParam (required = false) List<String> skills) {
+	public ResponseEntity<Response<?>> create(@PathVariable (required = false) UUID profile_id,
+												@RequestBody (required=false) Job body,
+												@RequestParam (required=false) String title,
+												@RequestParam (required=false) String description,
+												@RequestParam (required=false) Integer no_of_openings,
+												@RequestParam (required=false) String organization,
+												@RequestParam (required = false) List<String> skills) {
 		try {
 			if (body != null) {
 				if (profile_id == null) {
@@ -75,23 +76,39 @@ public class JobController {
 			Error.server(e.getMessage());
 			return ResponseEntity.internalServerError().body(new Response<>("bad", HttpStatus.INTERNAL_SERVER_ERROR.value(), null));
 		}
-	}
+	} 
 
 	@GetMapping
-	public ResponseEntity<Response<?>> readAll() {
+	public ResponseEntity<Response<?>> readAllFromProfile(@PathVariable UUID profile_id) {
 		try {
-			log.debug("Fetching all jobs");
-			return ResponseEntity.ok(new Response<>("success", HttpStatus.OK.value(), service.readAll()));
+			log.debug("Fetched for {}", profile_id);
+			List<Job> job = service.readFromOneProfile(profile_id);
+
+			if(!job.isEmpty())
+				return ResponseEntity.ok(new Response<>("success", HttpStatus.OK.value(), job));
+
+			return ResponseEntity.ok(new Response<>("bad", HttpStatus.NOT_FOUND.value(), null));
 		} catch (Exception e) {
 			Error.server(e.getMessage());
 			return ResponseEntity.internalServerError().body(new Response<>("bad", HttpStatus.INTERNAL_SERVER_ERROR.value(), null));
 		}
 	}
 
-	@PutMapping
+	@GetMapping("/{job_id}")
+	public ResponseEntity<Response<?>> read(@PathVariable(required = false) UUID job_id) {
+		try {
+			log.debug("Fetching the job {}", job_id);
+			return ResponseEntity.ok(new Response<>("success", HttpStatus.OK.value(), service.read(job_id)));
+		} catch (Exception e) {
+			Error.server(e.getMessage());
+			return ResponseEntity.internalServerError().body(new Response<>("bad", HttpStatus.INTERNAL_SERVER_ERROR.value(), null));
+		}
+	}
+
+	@PutMapping("/{job_id}")
 	public ResponseEntity<Response<?>> update(@RequestBody (required=false) Job body,
-												@RequestParam (required = false) UUID profile_id,
-												@RequestParam (required = false) UUID job_id,
+												@PathVariable (required = false) UUID profile_id,
+												@PathVariable (required = false) UUID job_id,
 												@RequestParam (required = false) String title,
 												@RequestParam (required = false) String description,
 												@RequestParam (required = false) Integer no_of_openings,
@@ -132,7 +149,7 @@ public class JobController {
 			Job job = service.update(profile_id, job_id, title, description, no_of_openings, organization, skills);
 
 			if(job == null)
-				return ResponseEntity.internalServerError().body(new Response<>("bad", HttpStatus.NOT_FOUND.value(), job));
+				return ResponseEntity.internalServerError().body(new Response<>("bad", HttpStatus.INTERNAL_SERVER_ERROR.value(), job));
 
 			log.debug("Updated job: {}", job);
 			return ResponseEntity.ok().body(new Response<>("success", HttpStatus.OK.value(), service.read(job.getJob_id())));
@@ -142,8 +159,8 @@ public class JobController {
 		}
 	}
 
-	@DeleteMapping
-	public ResponseEntity<Response<?>> delete(@RequestParam UUID job_id, @RequestParam UUID profile_id) {
+	@DeleteMapping("/{job_id}")
+	public ResponseEntity<Response<?>> delete(@PathVariable UUID job_id, @PathVariable UUID profile_id) {
 		try {
 			log.debug("Deleted Job: {}", job_id);
 			return ResponseEntity.ok(new Response<>("success", HttpStatus.OK.value(), service.delete(profile_id, job_id)));

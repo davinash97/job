@@ -14,7 +14,7 @@ FROM openjdk:17
 WORKDIR /app
 
 # Copy the jar file from the build stage
-COPY --from=build /app/target/job-0.0.1.jar app.jar
+COPY --from=build /app/target/JobSphere-Job-0.0.1.jar app.jar
 
 # Copy the .env file
 COPY --from=build /app/.env .env

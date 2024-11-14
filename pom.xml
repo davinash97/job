@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.jobsphere</groupId>
-	<artifactId>job</artifactId>
+	<artifactId>JobSphere-Job</artifactId>
 	<version>0.0.1</version>
-	<name>job</name>
+	<name>JobSphere-Job</name>
 	<description>Job Service for JobSphere</description>
 	<url/>
 	<licenses>
@@ -54,6 +54,12 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

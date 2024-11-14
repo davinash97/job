@@ -14,10 +14,12 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "job")
 public class Job {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	private UUID id;
+	private UUID job_id;
+
+	private UUID profile_id;
 
 	private String title;
 
@@ -25,22 +27,27 @@ public class Job {
 
 	private List<String> skills = new ArrayList<>();
 
-	private Integer no_of_openings = (Integer) 1;
+	private Integer no_of_openings = 1;
 
 	private String organization;
 
 	public Job(){}
 
-	public Job(String title, String description, Integer no_of_openings, String organization, List<String> skills) {
+	public Job(UUID profile_id, String title, String description, Integer no_of_openings, String organization, List<String> skills) {
+		this.profile_id = profile_id;
 		this.title = title;
 		this.description = description;
 		this.no_of_openings = no_of_openings;
 		this.organization = organization;
 		this.skills = skills;
 	}
+
+	public UUID getProfile_id() {
+		return profile_id;
+	}
 	
-	public UUID getId() {
-		return id;
+	public UUID getJob_id() {
+		return job_id;
 	}
 
 	public String getTitle() {
@@ -67,11 +74,11 @@ public class Job {
 		this.skills = skills;
 	}
 
-	public Integer getNoOfOpenings() {
+	public Integer getNo_of_openings() {
 		return no_of_openings;
 	}
 
-	public void setNoOfOpenings(Integer no_of_openings) {
+	public void setNo_of_openings(Integer no_of_openings) {
 		this.no_of_openings = no_of_openings;
 	}
 
@@ -85,6 +92,12 @@ public class Job {
 
 	@Override
 	public String toString() {
-		return "id:\t" + this.id + " title:\t" + this.title;
+		return "job_id " + this.job_id +
+				"profile_id " + this.profile_id +
+				"title" + this.title +
+				"description" + this.description +
+				"skills" + this.skills +
+				"no_of_openings" + this.no_of_openings +
+				"organization" + this.organization;
 	}
 }
