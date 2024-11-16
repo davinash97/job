@@ -26,11 +26,26 @@ import com.jobsphere.job.service.JobService;
 @RequestMapping("/job/{profile_id}")
 public class JobControllerWithProfileId {
 
+	/*
+	*	Controller for Job
+	*/
+
 	private static final Logger log = LoggerFactory.getLogger(JobControllerWithProfileId.class);
 
 	@Autowired
 	private JobService service;
 
+	/*
+	 * @params
+	 * profile_id = UUID of profile from request
+	 * title = title for job
+	 * description = description for job
+	 * no_of_openings = number of openings for job
+	 * organization = organization name for job
+	 * skills = Array of skills for job
+	 * 
+	 * @returns newly corrected job response
+	 */
 	@PostMapping
 	public ResponseEntity<Response<?>> create(@PathVariable (required = false) UUID profile_id,
 												@RequestBody (required=false) Job body,
@@ -78,6 +93,9 @@ public class JobControllerWithProfileId {
 		}
 	} 
 
+	/*
+	 * @returns Array of job all posts from a specific profile
+	 */
 	@GetMapping
 	public ResponseEntity<Response<?>> readAllFromProfile(@PathVariable UUID profile_id) {
 		try {
@@ -94,6 +112,11 @@ public class JobControllerWithProfileId {
 		}
 	}
 
+	/*
+	 * @params
+	 * job_id = job_id of a job (takes path variable)
+	 * @returns Array of job all posts
+	 */
 	@GetMapping("/{job_id}")
 	public ResponseEntity<Response<?>> read(@PathVariable(required = false) UUID job_id) {
 		try {
@@ -105,6 +128,18 @@ public class JobControllerWithProfileId {
 		}
 	}
 
+	/*
+	* @params
+	* job_id = job ID of the Job
+	* profile_id = UUID of profile from request
+	* title = title for job
+	* description = description for job
+	* no_of_openings = number of openings for job
+	* organization = organization name for job
+	* skills = Array of skills for job
+	* 
+	* @returns updated job response
+	*/
 	@PutMapping("/{job_id}")
 	public ResponseEntity<Response<?>> update(@RequestBody (required=false) Job body,
 												@PathVariable (required = false) UUID profile_id,
@@ -159,6 +194,13 @@ public class JobControllerWithProfileId {
 		}
 	}
 
+	/*
+	 * @params
+	 * profile_id = UUID of profile
+	 * job_id = UUID of job
+	 * 
+	 * @returns deleted job response
+	 */
 	@DeleteMapping("/{job_id}")
 	public ResponseEntity<Response<?>> delete(@PathVariable UUID job_id, @PathVariable UUID profile_id) {
 		try {
@@ -170,6 +212,10 @@ public class JobControllerWithProfileId {
 		}
 	}
 
+	/*
+	 * @params
+	 * message = Error messaged passed from catch block
+	 */
 	static class Error {
 		public static void server(String message) {
 			log.error("Error occurred at {}", message);

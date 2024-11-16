@@ -21,6 +21,10 @@ import com.jobsphere.job.service.JobService;
 @Service
 public class JobServiceImpl implements JobService {
 
+	/*
+	*	Service implementation for Job Service
+	*/
+
 	private static final Logger log = LoggerFactory.getLogger(JobService.class);
 
 	@Autowired
@@ -32,6 +36,12 @@ public class JobServiceImpl implements JobService {
 	@Autowired
 	private JobRepository repository;
 
+	/*
+	 * @params
+	 * profile_id = UUID of profile
+	 * 
+	 * @returns Boolean value if profile exist in Database
+	 */
 	@Override
 	public Boolean profileExistsById(UUID profile_id) {
 		try {
@@ -55,6 +65,17 @@ public class JobServiceImpl implements JobService {
 		}
 	}
 
+	/*
+	 * @params
+	 * profile_id = UUID of profile from request
+	 * title = title for job
+	 * description = description for job
+	 * no_of_openings = number of openings for job
+	 * organization = organization name for job
+	 * skills = Array of skills for job
+	 * 
+	 * @returns job response
+	 */
 	@Override
 	public Job create(UUID profile_id, String title, String description, Integer no_of_openings, String organization, List<String> skills) {
 		try {
@@ -75,12 +96,21 @@ public class JobServiceImpl implements JobService {
 		}
 	}
 
+	/*
+	 * @returns Array of job all posts
+	 */
 	@Override
 	public List<Job> readAll() {
 		log.debug("Fetched all jobs");
 		return repository.findAll();
 	}
 
+	/*
+	 * @params
+	 * job_id = of the job
+	 * 
+	 * @returns job response
+	 */
 	@Override
 	public Job read(UUID job_id) {
 		try {
@@ -93,6 +123,12 @@ public class JobServiceImpl implements JobService {
 		}
 	}
 
+	/*
+	 * @params
+	 * profile_id = profile ID from request
+	 * 
+	 * @returns Array of posts from a specific profile
+	 */
 	@Override
 	public List<Job> readFromOneProfile(UUID profile_id) {
 		try {
@@ -105,6 +141,18 @@ public class JobServiceImpl implements JobService {
 		}
 	}
 
+	/*
+	 * @params
+	 * job_id = job ID of the Job
+	 * profile_id = UUID of profile from request
+	 * title = title for job
+	 * description = description for job
+	 * no_of_openings = number of openings for job
+	 * organization = organization name for job
+	 * skills = Array of skills for job
+	 * 
+	 * @returns updated job response
+	 */
 	@Override
 	public Job update(UUID profile_id, UUID job_id, String title, String description, Integer no_of_openings, String organization, List<String> skills) {
 
@@ -139,6 +187,13 @@ public class JobServiceImpl implements JobService {
 		}
 	}
 
+	/*
+	 * @params
+	 * profile_id = UUID of profile
+	 * job_id = UUID of job
+	 * 
+	 * @returns Boolean value
+	 */
 	@Override
 	public Boolean delete(UUID profile_id, UUID job_id) {
 		try {
@@ -156,6 +211,10 @@ public class JobServiceImpl implements JobService {
 		}
 	}
 
+	/*
+	 * @params
+	 * message = Error messaged passed from catch block
+	 */
 	static class Error {
 		public static void server(String message) {
 			log.error(message);

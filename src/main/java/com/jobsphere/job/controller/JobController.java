@@ -25,11 +25,26 @@ import com.jobsphere.job.service.JobService;
 @RequestMapping("/job")
 public class JobController {
 
+	/*
+	*	Controller for Job
+	*/
+
 	private static final Logger log = LoggerFactory.getLogger(JobController.class);
 
 	@Autowired
 	private JobService service;
 
+	/*
+	 * @params
+	 * profile_id = UUID of profile from request
+	 * title = title for job
+	 * description = description for job
+	 * no_of_openings = number of openings for job
+	 * organization = organization name for job
+	 * skills = Array of skills for job
+	 * 
+	 * @returns newly corrected job response
+	 */
 	@PostMapping
 	public ResponseEntity<Response<?>> create(@RequestBody (required=false) Job body,
 											@RequestParam (required = false) UUID profile_id,
@@ -77,6 +92,9 @@ public class JobController {
 		}
 	}
 
+	/*
+	 * @returns Array of job all posts
+	 */
 	@GetMapping
 	public ResponseEntity<Response<?>> readAll() {
 		try {
@@ -88,6 +106,18 @@ public class JobController {
 		}
 	}
 
+	/*
+	* @params
+	* job_id = job ID of the Job
+	* profile_id = UUID of profile from request
+	* title = title for job
+	* description = description for job
+	* no_of_openings = number of openings for job
+	* organization = organization name for job
+	* skills = Array of skills for job
+	* 
+	* @returns updated job response
+	*/
 	@PutMapping
 	public ResponseEntity<Response<?>> update(@RequestBody (required=false) Job body,
 												@RequestParam (required = false) UUID profile_id,
@@ -142,6 +172,13 @@ public class JobController {
 		}
 	}
 
+	/*
+	 * @params
+	 * profile_id = UUID of profile
+	 * job_id = UUID of job
+	 * 
+	 * @returns deleted job response
+	 */
 	@DeleteMapping
 	public ResponseEntity<Response<?>> delete(@RequestParam UUID job_id, @RequestParam UUID profile_id) {
 		try {
@@ -153,6 +190,10 @@ public class JobController {
 		}
 	}
 
+	/*
+	 * @params
+	 * message = Error messaged passed from catch block
+	 */
 	static class Error {
 		public static void server(String message) {
 			log.error("Error occurred at {}", message);
